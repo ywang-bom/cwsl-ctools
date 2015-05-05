@@ -6,8 +6,7 @@ series for a region-of-interest (RoI) based on contents of the given
 Change-of-Date (CoD) file and AWAP local observation dataset. 
 
 
-## Description 
-### Scope
+## Scope
 The DXT tool focuses on the raw data extraction part without any
 post-processing. The following steps describes the logical process for
 running the DXT tool: 
@@ -37,7 +36,8 @@ inflation, tail distribution correction, and visualisation, are **out of scope
 of the DXT tool**. In Vistrails's terminology, these post-processing steps are
 separate modules.
 
-### Design
+
+## Design
 For better modularity, **the DXT tool itself will provide two modules for the
 Vistrails system**. 
 
@@ -62,8 +62,8 @@ further.**
 ## Python Version and Modules
 * Python version 2.7+ 
 * numpy 1.8.0+
-* scipy 0.14.0+ (needed for most data post-processing modules except the
-  simplest ones)
+* scipy 0.14.0+ (needed for NetCDF I/O and most data post-processing modules
+  except the simplest ones)
 
 The code is developed on a local machine and its final running environment
 should be one of the NCI machines. It can currently run with the Python 2.7.6
@@ -72,10 +72,11 @@ installation on raijin.
 
 ## Possible Issues
 There maybe some memory issue on running the DXT tool as it requires large
-memory to extract data for large regions (e.g. nmr, qld). Data post-processings
-like inflation could be even more memory taxing. The tool will only guarantee to
-work with smaller regions as memory issue is more hardware and operating system
-related and cannot be easily solved in the code itself.
+memory to extract data for large regions (e.g. `nmr`, `qld`). Data
+post-processings like inflation could be even more memory intensive. The tool
+will only guarantee to work with smaller regions as memory issue is more
+hardware and operating system related and cannot be easily solved in the code
+itself.
 
 
 ## Usage
@@ -117,20 +118,20 @@ There are currently three sub-commands and they are described as follows:
     Generates the reconstructed climate series using the given CoD filename. The
     output NetCDF must be specified in order to save the data, e.g.:
     ```Bash
-    python sdmrun.py out.nc /path/to/a/CoD/File
+    python sdmrun.py dxt-gridded out.nc /path/to/a/CoD/File
     ```
 
 * `dxt-gridded2`
     Similar to above sub-command, but takes parameters that generates a 
     file path to the CoD file instead of the CoD filename directly, e.g:
     ```Bash
-    python sdmrun.py out.nc -m ACCESS1.0 -c historical -r tas -s 2 -p rain
+    python sdmrun.py dxt-gridded2 out.nc -m ACCESS1.0 -c historical -r tas -s 2 -p rain
     ```
 
 
 ## Appendix
 ### List of Pre-defined Variables
-#### Models
+#### Models (22)
 * ACCESS1.0
 * ACCESS1.3
 * BNU-ESM
@@ -154,12 +155,12 @@ There are currently three sub-commands and they are described as follows:
 * NorESM1-M
 * bcc-csm1-1-m
 
-#### Scenarios
+#### Scenarios (3)
 * historical
 * rcp45
 * rcp85
 
-#### Region-Types
+#### Region-Types (10)
 * mec
 * nmr
 * nul
@@ -171,13 +172,13 @@ There are currently three sub-commands and they are described as follows:
 * swc
 * tas
 
-#### Seasons
+#### Seasons (4)
 * DJF
 * MAM
 * JJA
 * SON
 
-#### Predictands
+#### Predictands (3)
 * rain
 * tmin
 * tmax
