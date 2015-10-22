@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Command line interface to the Statistical Downscaling Model (SDM) package.
 """
@@ -68,10 +69,10 @@ def main(args):
 
     dxt_gridded_parser = subparsers.add_parser('dxt-gridded',
                                                help='extract gridded data using the given cod file')
-    dxt_gridded_parser.add_argument('output_file',
-                                    help='output netCDF file name')
     dxt_gridded_parser.add_argument('cod_file_path',
                                     help='full path to the CoD file')
+    dxt_gridded_parser.add_argument('output_file',
+                                    help='output netCDF file name')
     dxt_gridded_parser.add_argument('-R', '--region',
                                     required=False,
                                     help='the region where the data are to be extracted')

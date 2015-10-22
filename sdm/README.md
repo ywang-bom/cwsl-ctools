@@ -118,14 +118,14 @@ There are currently three sub-commands and they are described as follows:
     Generates the reconstructed climate series using the given CoD filename. The
     output NetCDF must be specified in order to save the data, e.g.:
     ```Bash
-    python sdmrun.py dxt-gridded out.nc /path/to/a/CoD/File
+    python sdmrun.py dxt-gridded out.nc /path/to/a/CoD/File out.nc
     ```
 
 * `dxt-gridded2`
     Similar to above sub-command, but takes parameters that generates a 
     file path to the CoD file instead of the CoD filename directly, e.g:
     ```Bash
-    python sdmrun.py dxt-gridded2 out.nc -m ACCESS1.0 -c historical -r tas -s 2 -p rain
+    python sdmrun.py dxt-gridded2 out.nc -m ACCESS1.0 -c historical -r tas -s 2 -p rain out.nc
     ```
 
 
