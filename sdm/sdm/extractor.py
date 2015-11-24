@@ -9,26 +9,26 @@ import numpy as np
 from scipy.io import netcdf
 
 from .cod import CoD
-from .mask import Mask
-from .gridded import AwapDailyData
+from .mask import MaskReader
+from .gridded import AwapDailyDataReader
 
 
 class GriddedExtractor(object):
     def __init__(self, cod_base_dir=None, mask_base_dir=None, gridded_base_dir=None, verbose=False):
         self.cod_manager = CoD(base_dir=cod_base_dir, verbose=verbose)
-        self.mask_manager = Mask(base_dir=mask_base_dir, verbose=verbose)
-        self.awap_manager = AwapDailyData(base_dir=gridded_base_dir, verbose=verbose)
+        self.mask_reader = MaskReader(base_dir=mask_base_dir, verbose=verbose)
+        self.awap_reader = AwapDailyDataReader(base_dir=gridded_base_dir, verbose=verbose)
         self.verbose = verbose
 
     def extract(self, model, scenario, region_type, season, predictand, region=None, cube=True):
         cod_dates = self.cod_manager.read_cod(model, scenario, region_type, season, predictand)
-        mask = self.mask_manager.read_mask(region or region_type)
-        data = self.awap_manager.read_data(predictand, cod_dates['adates'], mask)
+        mask = self.mask_reader.read(region or region_type)
+        data = self.awap_reader.read_as_2d(predictand, cod_dates['adates'], mask)
 
         if cube:
             data, lat, lon = self.cubify(data, mask)
         else:
-            lat, lon = self.awap_manager.lat, self.awap_manager.lon
+            lat, lon = mask.lat, mask.lon
 
         return data, cod_dates['rdates'], lat, lon
 
@@ -36,18 +36,16 @@ class GriddedExtractor(object):
     def cubify(data, mask):
         """ Reshape the given data of shape (ndays, npoints) to (ndays, nlat, nlon)
         """
-        lat = np.arange(-4450, -995, 5) / 100.0
-        lon = np.arange(11200, 15630, 5) / 100.0
-        idx_mask = np.where(mask != 0)
+        idx_mask = np.where(mask.data != 0)
         idx_lat_min = np.min(idx_mask[0])
         idx_lat_max = np.max(idx_mask[0]) + 1
         idx_lon_min = np.min(idx_mask[1])
         idx_lon_max = np.max(idx_mask[1]) + 1
 
-        lat_subsetted = lat[idx_lat_min: idx_lat_max]
-        lon_subsetted = lon[idx_lon_min: idx_lon_max]
+        lat_subsetted = mask.lat[idx_lat_min: idx_lat_max]
+        lon_subsetted = mask.lon[idx_lon_min: idx_lon_max]
 
-        mask_subsetted = mask[idx_lat_min: idx_lat_max, idx_lon_min: idx_lon_max]
+        mask_subsetted = mask.data[idx_lat_min: idx_lat_max, idx_lon_min: idx_lon_max]
         idx_mask_subsetted = np.where(mask_subsetted.reshape(mask_subsetted.size) != 0)[0]
 
         ret = np.empty((data.shape[0], mask_subsetted.size))
